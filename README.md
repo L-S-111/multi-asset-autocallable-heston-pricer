@@ -60,11 +60,11 @@ The generator forces the number of simulated paths to the nearest power of two (
 
 The risk sensitive Greeks look at the rate of change of the derivative's value, $P$, with respect to the underlying, with the first order $\Delta$:
 
-$$\Delta=\frac{\partial P}{\partial S_{i}} $$
+$$\Delta_{i}=\frac{\partial P}{\partial S_{i}} $$
 
 and second order $\Gamma$:
 
-$$\Gamma=\frac{\partial^{2} P}{\partial S_{i}^{2}}$$
+$$\Gamma_{i}=\frac{\partial^{2} P}{\partial S_{i}^{2}}$$
 
 which we approximate via central finite difference. To avoid the expensive re-simulation of the SDE system for every price perturbation, the engine exploits the fact that the Heston price process is homogeneous of degree 1 with respect to $S_{0}$. Hence, the relative performance $\frac{S_{i}(t)}{S_{i}(0)}$ is invariant to shifts in $S_{i}(0)$. By isolating this tensor, shifted paths are generated via a $O(1)$ scalar multiplication, reducing the variance of the finite-difference noise and accelerating risk calculations by orders of magnitude.
 
