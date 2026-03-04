@@ -18,18 +18,30 @@ def psi_inv(U_v, p, beta):
         #Clamps negative values to 0.0
         return np.maximum(inv_cdf, 0.0)
 
-def nearest_corr_matrix(Omega: np.ndarray):
-     """Runs a single spectral projection step to find a 
-        positive semi-definite proxy for an unrealisable correlation matrix"""
+def nearest_corr_matrix(Omega: np.ndarray, max_iter: int=100, tol: float =1e-8) -> np.ndarray:
+    """Computes the nearest correlation matrix using Higham's alternating projections method"""
+    
+    delta_S=np.zeros_like(Omega)
+    Y=Omega.copy()
+    
+    for _ in range(max_iter):
+        R=Y-delta_S
      
-     eigen_values, eigen_vectors=eigh(Omega)
-     eigen_values=np.maximum(eigen_values, 1e-8)
+        eigen_values, eigen_vectors=eigh(R)
 
-     Omega_pd=eigen_vectors@np.diag(eigen_values)@eigen_vectors.T
-
-     inv_sqrt_diag=1.0/np.sqrt(np.diag(Omega_pd))
-     Omega_nearest=Omega_pd*np.outer(inv_sqrt_diag,inv_sqrt_diag)
-     return Omega_nearest
+        eigen_values=np.maximum(eigen_values, 1e-8)
+        X=eigen_vectors@np.diag(eigen_values)@eigen_vectors.T
+        X=(X+X.T)/2.0
+      
+        delta_S=X-R
+   
+        Y=X.copy()
+        np.fill_diagonal(Y, 1.0)
+        
+        if np.linalg.norm(Y-X, 'fro')<tol:
+            break
+            
+    return Y
      
 
 class MultiAssetHestonQE(SDE):
