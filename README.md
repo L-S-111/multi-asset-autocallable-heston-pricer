@@ -23,7 +23,7 @@ To prevent correlation dampening caused by the independent variance processes, t
 
 $$\Omega_{i,j}=\frac{\Sigma_{i,j}}{\sqrt{1-\rho_{i}^{2}}\sqrt{1-\rho_{j}^{2}}}$$
 
-In cases where $\Omega$ loses its positive semi-definiteness, the engine applies a single  spectral projection step to recover the nearest valid correlation matrix before extracting the Cholesky factor $\Omega=LL^{T}$.
+In cases where $\Omega$ loses its positive semi-definiteness, the engine implements Higham's alternating projections algorithm (with Dykstra's correction) to compute the nearest valid correlation matrix. This strictly enforces positive definiteness and unit diagonals before extracting the Cholesky factor $\Omega=LL^{T}$.
 
 
 ### 2. Andersen's Quadratic-Exponential (QE) Discretisation
@@ -87,3 +87,4 @@ As the worst performing underlying approaches the downside barrier, it causes an
 
 ## References
 * **Andersen, L. B. G. (2008).** *Simple and efficient simulation of the Heston stochastic volatility model.* Journal of Computational Finance, 11(3), 1-42.
+* **Higham, N. J. (2002).** *Computing the nearest correlation matrix—a problem from finance.* IMA Journal of Numerical Analysis, 22(3), 329-343.
